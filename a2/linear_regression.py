@@ -1,3 +1,5 @@
+# collaborated with Imani Finkley
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -17,7 +19,8 @@ class LinearRegressionModel(nn.Module):
     def __init__(self, num_param):
         ## TODO 1: Set up network
         super().__init__()
-        pass
+        self.linear = nn.Linear(1, num_param)
+        # pass
 
     def forward(self, x):
         """forward generates the predictions for the input
@@ -38,7 +41,9 @@ class LinearRegressionModel(nn.Module):
         :rtype: torch.Tensor
         """
         ## TODO 2: Implement the linear regression on sample x
-        pass
+        y_prediction = self.linear(x)
+        return y_prediction
+        # pass
 
 
 def data_transform(sample):
@@ -73,7 +78,10 @@ def mse_loss(output, target):
     """
     ## TODO 3: Implement Mean-Squared Error loss. 
     # Use PyTorch operations to return a PyTorch tensor
-    pass
+    criterion = nn.MSELoss()
+    
+    return criterion
+    # pass
 
 
 def mae_loss(output, target):
@@ -100,7 +108,10 @@ def mae_loss(output, target):
     """
     ## TODO 4: Implement L1 loss. Use PyTorch operations.
     # Use PyTorch operations to return a PyTorch tensor.
-    pass
+    mae = nn.L1Loss()
+    output = mae(input, target)
+    print(output)
+    # pass
 
 
 if __name__ == "__main__":
@@ -150,4 +161,31 @@ if __name__ == "__main__":
     ## You don't need to do loss.backward() or optimizer.step() here since you are no
     ## longer training.
 
-    pass
+    train_loader, val_loader, test_loader = get_data_loaders(path_to_csv='/Users/salma/intsys_onboarding/a1_final/IntSys-Education/a2/data/DS1.csv', 
+    transform_fn=data_transform, train_val_test=[0.8, 0.2, 0.2], batch_size=32)
+
+    model = LinearRegressionModel()
+
+    optimizer = optim.SGD(model.parameters, lr=0.01)
+
+    model.train()
+    for t in range(500):
+      for batch_index, (input_t, y) in enumerate(train_loader):
+        optimizer.zero_grad()
+        preds = model(input)
+        loss = mse_loss(preds, y)
+        
+        loss.backward() 
+        optimizer.step()
+        
+    model.eval()
+    for batch_index, (input_t, y) in enumerate(val_loader):
+      preds = model(input)
+      loss = mse_loss(preds, y)
+
+    model.test()
+    for batch_index, (input_t, y) in enumerate(test_loader):
+      preds = model(input)
+      loss = mse_loss(preds, y)
+
+    # pass

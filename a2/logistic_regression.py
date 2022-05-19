@@ -1,3 +1,5 @@
+# collaborated with Imani Finkley
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -18,7 +20,8 @@ class LogisticRegressionModel(nn.Module):
     def __init__(self, num_param):
         ## TODO 1: Set up network
         super().__init__()
-        pass
+        self.linear = nn.Linear(1, num_param)
+        # pass
 
     def forward(self, x):
         """forward generates the predictions for the input
@@ -40,7 +43,8 @@ class LogisticRegressionModel(nn.Module):
         """
 
         ## TODO 2: Implement the logistic regression on sample x
-        pass
+        out = self.linear(x)
+        # pass
 
 
 class MultinomialRegressionModel(nn.Module):

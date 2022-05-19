@@ -1,3 +1,5 @@
+# collaborated with: Imani Finkley
+
 import csv
 import numpy as np
 from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
@@ -18,8 +20,14 @@ class SimpleDataset(Dataset):
         # with open('path/to/.csv', 'r') as f:
         #   lines = ...
         ## Look up how to read .csv files using Python. This is common for datasets in projects.
-
+        rows = []
         self.transform = transform
+        with open(path_to_csv, 'r') as file:
+            csvreader = csv.reader(file)
+            header = next(csvreader)
+            for row in csvreader:
+                rows.append(row)
+
         pass
 
     def __len__(self):
@@ -28,7 +36,9 @@ class SimpleDataset(Dataset):
         [extended_summary]
         """
         ## TODO: Returns the length of the dataset.
-        pass
+        df = csv.reader(self)
+        val = len(list(rf))
+        return val
 
     def __getitem__(self, index):
         """__getitem__ [summary]
@@ -47,8 +57,14 @@ class SimpleDataset(Dataset):
         # if self.transform:
         #   sample = self.transform(sample)
         ## Remember to convert the x and y into torch tensors.
+        data = self[index, :].as_matrix()
+        data = data.astype('float')
 
-        pass
+        sample = {'y': np.array([data[2]]), 'x': np.delete(data, 2)}
+        if self.transform:
+            sample = self.transform(sample)
+        return sample
+        # pass
 
 
 def get_data_loaders(path_to_csv, 
@@ -78,10 +94,12 @@ def get_data_loaders(path_to_csv,
     ## TODO: Rewrite this section so that the indices for each dataset split
     ## are formed.
 
+    third = int(dataset_size/3)
+
     ## BEGIN: YOUR CODE
-    train_indices = []
-    val_indices = []
-    test_indices = []
+    train_indices = dataset[:third]
+    val_indices = dataset[-third:]
+    test_indices = dataset[third:][:third]
     ## END: YOUR CODE
 
     # Now, we define samplers for each of the train, val and test data
